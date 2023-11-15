@@ -37,13 +37,22 @@ def proc(driver):
   my_list = []
 
   # 각 element에서 링크와 내용(유효성 검사)을 추출하여 리스트에 추가합니다.
-  pattern_title = r'\b화산귀환-\d+화\b'
+  pattern_title = r'\b\d+화\b'
+  # pattern_title = r'\b떡협지에서 검을 수련함-\d+화\b'
   pattern_no = r'\d+'
   for element in elements:
     link = element.get_attribute("href")
-    text = re.findall(pattern_title, element.text)[0]
-    no = int(re.findall(pattern_no, text)[0])
-    my_list.append({"no": no, "link": link, "text": text})
+    matches = re.findall(pattern_title, element.text)
+    if matches:
+      text = matches[0]
+      no_matches = re.findall(pattern_no, text)
+      if no_matches:
+        no = int(no_matches[0])
+        my_list.append({"no": no, "link": link, "text": text})
+      else:
+        print("No number match found in text:", text)
+    else:
+      print("No pattern match found in element text")
 
   # list 정렬
   # lst.sort(key=lambda x: x["no"])  # no를 기준으로 오름차순 정렬
